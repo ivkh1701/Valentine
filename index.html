@@ -6,90 +6,103 @@
 <title>Will You Be My Valentine? ❤️</title>
 
 <style>
-    body {
+body {
     margin: 0;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background: url("https://i.ibb.co/mVbMrz8G/IMG-6365.jpg") no-repeat center center/cover;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
     font-family: Arial, sans-serif;
-    text-align: center;
     overflow: hidden;
+    position: relative;
+    animation: heartbeat 3s infinite;
 }
 
-    .container {
-        background: white;
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        position: relative;
-        z-index: 10;
-        max-width: 350px;
-    }
+/* Heartbeat background */
+@keyframes heartbeat {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.01); }
+}
 
-    h1 {
-        color: #ff4b6e;
-        font-size: 24px;
-        margin-bottom: 25px;
-    }
+/* Star background */
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    animation: twinkle 2s infinite alternate;
+}
 
-    button {
-        padding: 12px 25px;
-        font-size: 16px;
-        border: none;
-        border-radius: 30px;
-        cursor: pointer;
-        margin: 10px;
-        transition: 0.3s ease;
-    }
+@keyframes twinkle {
+    from { opacity: 0.2; }
+    to { opacity: 1; }
+}
 
-    .yes {
-        background: #ff4b6e;
-        color: white;
-    }
+/* Glass card */
+.container {
+    background: rgba(255,255,255,0.9);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    z-index: 10;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    transition: 0.5s;
+}
 
-    .yes:hover {
-        transform: scale(1.1);
-        background: #ff1e50;
-    }
+h1 {
+    color: #ff3366;
+}
 
-    .no {
-        background: #ddd;
-    }
+/* Buttons */
+button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 30px;
+    margin: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 16px;
+}
 
-    .no:hover {
-        background: #bbb;
-    }
+.yes {
+    background: #ff3366;
+    color: white;
+    box-shadow: 0 0 20px #ff3366;
+}
 
-    .heart {
-        position: absolute;
-        color: #ff4b6e;
-        font-size: 24px;
-        animation: float 4s linear infinite;
-    }
+.no {
+    background: #ddd;
+}
 
-    @keyframes float {
-        0% {
-            transform: translateY(100vh) scale(0.5);
-            opacity: 1;
-        }
-        100% {
-            transform: translateY(-10vh) scale(1.5);
-            opacity: 0;
-        }
-    }
+/* Falling roses */
+.rose {
+    position: absolute;
+    font-size: 20px;
+    animation: fall linear forwards;
+}
 
-    .love-message {
-        font-size: 26px;
-        color: #ff1e50;
-        animation: pop 0.6s ease forwards;
+@keyframes fall {
+    to {
+        transform: translateY(110vh);
+        opacity: 0;
     }
+}
 
-    @keyframes pop {
-        from { transform: scale(0); }
-        to { transform: scale(1); }
+/* Confetti */
+.confetti {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    animation: confettiFall 3s linear forwards;
+}
+
+@keyframes confettiFall {
+    to {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
     }
+}
 </style>
 </head>
 
@@ -102,54 +115,76 @@
 </div>
 
 <script>
-let noClickCount = 0;
+let noClicks = 0;
+const yesBtn = document.querySelector(".yes");
+const noBtn = document.querySelector(".no");
+
+const messages = [
+"Are you sure? 🥺",
+"Really sure?? 😭",
+"Think carefully 😌",
+"You’re breaking my heart 💔",
+"JavaScript says we are compatible 🤖❤️",
+"System error: Wrong answer 😤",
+"Plot twist: You love me 😏",
+"Okay now you're just testing me 😂"
+];
 
 function sayNo() {
-    noClickCount++;
+    if(noClicks < messages.length){
+        document.getElementById("question").innerText = messages[noClicks];
+        noClicks++;
 
-    const messages = [
-        "Are you sure? 🥺",
-        "Really really sure? 😭",
-        "Think again… I’m very cute you know 😌",
-        "Don’t break my HTML heart 💔",
-        "My CSS already styled our future 😩",
-        "JavaScript says we belong together 🤖❤️",
-        "Error 404: Your love not found 💀",
-        "System warning: Regret incoming 😤",
-        "Plot twist: You actually mean YES 😏",
-        "Better say yes before I remove the No button 😈",
-        "Okay now you’re just being dramatic 😂",
-        "Last chance… I’m telling your friends 👀"
-    ];
+        // YES grows
+        yesBtn.style.transform = `scale(${1 + noClicks * 0.1})`;
 
-    if (noClickCount <= messages.length) {
-        document.getElementById("question").innerText = messages[noClickCount - 1];
+        // NO shrinks
+        noBtn.style.transform = `scale(${1 - noClicks * 0.1})`;
     } else {
-        document.getElementById("question").innerText =
-        "Fine. The No button is tired. Just press YES already ❤️";
+        document.getElementById("question").innerText = "Fine. Destiny says YES ❤️";
     }
 }
 
 function sayYes() {
     document.querySelector(".container").innerHTML =
-        "<h1 class='love-message'>Yayyyy!! 💖 I knew it! 💍✨</h1>";
-
-    createHearts();
+    "<h1>YAYYYY!!! 💍❤️ You just made me the happiest person alive!!!</h1>";
+    createRoses();
+    createConfetti();
 }
 
-function createHearts() {
-    setInterval(() => {
-        const heart = document.createElement("div");
-        heart.classList.add("heart");
-        heart.innerHTML = "❤️";
-        heart.style.left = Math.random() * 100 + "vw";
-        heart.style.fontSize = Math.random() * 20 + 20 + "px";
-        document.body.appendChild(heart);
+/* Stars background */
+for(let i=0;i<150;i++){
+    const star = document.createElement("div");
+    star.classList.add("star");
+    star.style.left = Math.random()*100+"vw";
+    star.style.top = Math.random()*100+"vh";
+    star.style.animationDuration = (Math.random()*2+1)+"s";
+    document.body.appendChild(star);
+}
 
-        setTimeout(() => {
-            heart.remove();
-        }, 4000);
-    }, 300);
+/* Roses falling */
+function createRoses(){
+    setInterval(()=>{
+        const rose = document.createElement("div");
+        rose.classList.add("rose");
+        rose.innerHTML="🌹";
+        rose.style.left=Math.random()*100+"vw";
+        rose.style.animationDuration=(Math.random()*3+3)+"s";
+        document.body.appendChild(rose);
+        setTimeout(()=>rose.remove(),5000);
+    },300);
+}
+
+/* Confetti */
+function createConfetti(){
+    for(let i=0;i<150;i++){
+        const confetti=document.createElement("div");
+        confetti.classList.add("confetti");
+        confetti.style.left=Math.random()*100+"vw";
+        confetti.style.background=`hsl(${Math.random()*360},100%,50%)`;
+        document.body.appendChild(confetti);
+        setTimeout(()=>confetti.remove(),3000);
+    }
 }
 </script>
 
